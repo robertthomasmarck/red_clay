@@ -1,0 +1,85 @@
+---
+export interface Props {
+  variant: 'orange' | 'dark';
+  label: string;
+  href?: string;
+}
+
+const { variant, label, href } = Astro.props;
+
+const variantStyles = {
+  orange: {
+    backgroundColor: 'rgba(138, 63, 16, 1)',
+    color: '#ffffff'
+  },
+  dark: {
+    backgroundColor: '#333333',
+    color: '#ffffff'
+  }
+};
+
+const style = variantStyles[variant];
+---
+
+{href ? (
+  <a
+    href={href}
+    class={`btn btn-${variant}`}
+    style={`background-color: ${style.backgroundColor}; color: ${style.color};`}
+  >
+    {label}
+  </a>
+) : (
+  <button
+    type="button"
+    class={`btn btn-${variant}`}
+    style={`background-color: ${style.backgroundColor}; color: ${style.color};`}
+  >
+    {label}
+  </button>
+)}
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--height);
+    padding: 0 2rem;
+    border: none;
+    box-shadow: none;
+    border-radius: 12px;
+    cursor: pointer;
+
+    /* Menu-style typography */
+    font-family: var(--font-sans-serif);
+    font-weight: 400;
+    font-size: 1.4rem;
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: 1px;
+
+    text-decoration: none;
+    white-space: nowrap;
+    transition: filter 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn:hover {
+    filter: brightness(1.2);
+    text-decoration: none;
+    box-shadow: none;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Mobile: Smaller buttons */
+  @media (max-width: 700px) {
+    .btn {
+      height: calc(var(--height) * 0.85);
+      padding: 0 1.25rem;
+      font-size: 1.2rem;
+    }
+  }
+</style>

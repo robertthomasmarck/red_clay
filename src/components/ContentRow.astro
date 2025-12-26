@@ -1,0 +1,138 @@
+---
+import Button from "./Button.astro";
+
+export interface Props {
+  title?: string;
+  text?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  leftButtonLabel?: string;
+  leftButtonHref?: string;
+  rightButtonLabel?: string;
+  rightButtonHref?: string;
+  reversed?: boolean;
+}
+
+const {
+  title,
+  text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  imageSrc = "/img/clay-images-7.jpg",
+  imageAlt = "Featured image",
+  leftButtonLabel = "LEFT BUTTON",
+  leftButtonHref,
+  rightButtonLabel = "RIGHT BUTTON",
+  rightButtonHref,
+  reversed = false,
+} = Astro.props;
+---
+
+<div class={`content-row ${reversed ? "reversed" : ""} fade-in-on-scroll`}>
+  <div class="text-section">
+    {title && <h2 class="content-row-title">{title}</h2>}
+    <div class="text-wrapper">
+      <p class="text-content">{text}</p>
+    </div>
+    <div class="button-wrapper">
+      <Button variant="orange" label={leftButtonLabel} href={leftButtonHref} />
+      <Button variant="dark" label={rightButtonLabel} href={rightButtonHref} />
+    </div>
+  </div>
+  <div class="photo-section">
+    <img src={imageSrc} alt={imageAlt} />
+  </div>
+</div>
+
+<style>
+  .content-row {
+    display: flex;
+    flex: 1 1 100%;
+    margin: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 400px;
+  }
+
+  .content-row.reversed {
+    flex-direction: row-reverse;
+  }
+
+  .text-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background-color: var(--color-bg);
+  }
+
+  .text-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .text-content {
+    width: 70%;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    line-height: 1.8;
+    color: var(--color-base);
+  }
+
+  .content-row-title {
+    margin: 0 0 1rem 0;
+    font-size: 3rem;
+    font-family: "Legan", var(--font-sans-serif);
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-weight: 300;
+    text-align: center;
+    color: var(--color-base);
+  }
+
+  .button-wrapper {
+    display: flex;
+    gap: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .photo-section {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .photo-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Mobile/Tablet: Hide photo section */
+  @media (max-width: 850px) {
+    .content-row {
+      min-height: auto;
+    }
+
+    .text-section {
+      padding: 1.5rem;
+    }
+
+    .text-content {
+      width: 90%;
+      font-size: 1.4rem;
+    }
+
+    .button-wrapper {
+      gap: 0.75rem;
+      padding-top: 1.5rem;
+    }
+
+    .photo-section {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PostCard from "../components/PostCard.astro";
+import ContentRow from "../components/ContentRow.astro";
+import { getCollection } from "astro:content";
+
+// Fetch all collections
+const allPages = await getCollection("pages");
+const allNews = await getCollection("news");
+const allWork = await getCollection("work");
+const allSold = await getCollection("sold");
+
+// Combine for filtering
+const allContent = [...allPages, ...allNews, ...allWork, ...allSold];
+
+// Filter for pagetype containing 'main' and sort by number
+const posts = allContent
+  .filter((item) => {
+    return item.data.pagetype && item.data.pagetype.includes("main");
+  })
+  .sort((a, b) => {
+    const numA = a.data.number || 9999;
+    const numB = b.data.number || 9999;
+    return numA - numB;
+  });
+
+// Get index-page metadata (from pages collection)
+const indexPage = allPages.find((p) => p.slug === "index");
+const title = indexPage?.data.title || "Clay";
+const description = indexPage?.data.description;
+
+let postCounter = 0;
+---
+
+<Layout title={title} description={description}>
+  <div class="post-feed">
+    {
+      posts.map((post) => {
+        postCounter++;
+        // Calculate slug. If it's from 'pages', slug is just slug (or flattened).
+        // content/pages/bio.md -> slug 'bio'.
+        // content/work/work-1.md -> slug 'work-1'? No, in config.ts, work collection.
+        // But legacy mapped work/work-1.md -> /work/work-1
+        // My [...slug].astro will handle mapping.
+        // Here I need to generate the same link.
+
+        let slug = post.slug;
+        if (post.collection === "work") slug = `work/${post.slug}`;
+        if (post.collection === "news") slug = `news/${post.slug}`;
+        if (post.collection === "sold") slug = `sold/${post.slug}`;
+        // Pages collection: 'bio' -> 'bio'.
+
+        // Wait, legacy slug split logic:
+        // src/pages/bio/index.md -> /bio.
+        // content/work/work-1.md -> /work/work-1.
+
+        return (
+          <>
+            <PostCard
+              count={postCounter}
+              post={post}
+              slug={slug}
+              subtitle={
+                postCounter === 1 ? "Websites for Therapists" : undefined
+              }
+            />
+            {postCounter === 1 && (
+              <ContentRow
+                title="Title Goes Here"
+                text={`1 In the beginning God created the heavens and the earth. 2 Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.`}
+              />
+            )}
+            {postCounter === 2 && (
+              <ContentRow
+                title="Title Goes Here"
+                text={`3 And God said, "Let there be light," and there was light. 4 God saw that the light was good, and he separated the light from the darkness. 5 God called the light "day," and the darkness he called "night." And there was evening, and there was morning—the first day.`}
+                reversed
+                imageSrc="/img/clay-images-12.jpg"
+              />
+            )}
+          </>
+        );
+      })
+    }
+  </div>
+</Layout>
