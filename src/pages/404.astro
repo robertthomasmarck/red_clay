@@ -1,0 +1,130 @@
+---
+import Button from "../components/Button.astro";
+import PostCard from "../components/PostCard.astro";
+import "../styles/vars.css";
+
+// Create a mock post object for the PostCard
+const errorPost = {
+  data: {
+    title: "Error 404",
+    thumbnail: "/img/red-path-canyon-1.jpeg",
+  }
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Error: 404</title>
+  </head>
+  <body>
+    <div class="error-page">
+      <div class="card-wrapper">
+        <PostCard
+          count={1}
+          post={errorPost}
+          slug=""
+          disableLink={true}
+        />
+        <div class="error-content">
+          <img src="/img/red-logo-frontpage-no-text.png" alt="Logo" class="error-logo" />
+          <h1 class="error-text">Wrong turn. That page does not exist. Error: 404</h1>
+          <div class="button-wrapper">
+            <Button variant="orange" label="Return Home" href="/" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  @font-face {
+    font-family: "Legan";
+    src: url("/fonts/Legan.otf") format("opentype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  .error-page {
+    width: 100%;
+    min-height: 100vh;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .card-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1350px;
+  }
+
+  .card-wrapper .post-card {
+    height: 75vh !important;
+    margin: 0 !important;
+    background-position: center bottom !important;
+  }
+
+  .card-wrapper .post-card-content {
+    display: none;
+  }
+
+  .error-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    background: linear-gradient(
+      to bottom,
+      rgba(103, 47, 12, 0.429),
+      rgba(35, 22, 8, 0.99)
+    );
+    border-radius: 12px;
+  }
+
+  .error-logo {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 2rem;
+  }
+
+  .error-text {
+    font-family: "Legan", var(--font-sans-serif);
+    font-size: clamp(0.75rem, 2.5vw, 2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    padding: 0 2rem;
+  }
+
+  .button-wrapper {
+    margin-top: 2rem;
+  }
+
+  .button-wrapper .btn {
+    height: 3.75rem !important;
+    padding: 0 5rem !important;
+    font-size: 1.23rem !important;
+  }
+</style>
