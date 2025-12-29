@@ -1,6 +1,7 @@
 ---
 templateKey: about-page
-thumbnail: /img/red-rock-1.jpeg
+thumbnail: /img/red-rock-3.jpeg
+backgroundPosition: center 30%
 date: 2023-03-02T10:17:05.133Z
 title: About
 description: About the Artist

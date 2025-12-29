@@ -10,6 +10,8 @@ pagetype:
 
 ![Red Canyon](/img/red-path-canyon-1.jpeg)
 
+[Back to Hidden Pages](/hidden)
+
 # Red Path - Storybrand
 
 Add your marketing notes here...

@@ -72,11 +72,23 @@ if (heroPost?.collection === "sold") heroSlug = `sold/${heroPost.slug}`;
               subtitle={
                 postCounter === 1 ? "Websites for Therapists" : undefined
               }
+              subtitle2={
+                postCounter === 1
+                  ? "Created to connect you with your ideal client"
+                  : undefined
+              }
+              buttonLabel={postCounter === 1 ? "CONTACT ME TODAY!" : undefined}
+              buttonHref={postCounter === 1 ? "#contact-section" : undefined}
+              skipLinkText={
+                postCounter === 1 ? "I'll pass: Enter the site" : undefined
+              }
+              skipLinkHref={postCounter === 1 ? "/blog" : undefined}
             />
             {postCounter === 1 && (
               <ContentRow
                 title="Title Goes Hereeee"
                 text={`1 In the beginning God created the heavens and the earth. 2 Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.`}
+                imageSrc="/img/blue-reflection-1.jpeg"
                 buttonHref="#contact-section"
                 skipLinkHref="/blog"
               />

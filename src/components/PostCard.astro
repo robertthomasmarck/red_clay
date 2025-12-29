@@ -1,12 +1,19 @@
 ---
+import Button from "./Button.astro";
+
 export interface Props {
   count: number;
   post: any; // using any for now, better to use CollectionEntry
   slug: string;
   subtitle?: string;
+  subtitle2?: string;
   displayTitle?: string;
   hideBackground?: boolean;
   disableLink?: boolean;
+  buttonLabel?: string;
+  buttonHref?: string;
+  skipLinkText?: string;
+  skipLinkHref?: string;
 }
 
 const {
@@ -14,19 +21,25 @@ const {
   post,
   slug,
   subtitle,
+  subtitle2,
   displayTitle,
   hideBackground,
   disableLink,
+  buttonLabel,
+  buttonHref,
+  skipLinkText,
+  skipLinkHref,
 } = Astro.props;
 const thumbnail = post.data.thumbnail;
 const title = post.data.title;
 const logo = post.data.logo;
+const backgroundPosition = post.data.backgroundPosition || "center center";
 const isLarge = count % 3 === 0;
 const isHero = count === 1;
 
 // Construct background image style
 const bgStyle =
-  thumbnail && !hideBackground ? `background-image: url(${thumbnail});` : "";
+  thumbnail && !hideBackground ? `background-image: url(${thumbnail}); background-position: ${backgroundPosition};` : "";
 const hasImage = thumbnail && !hideBackground;
 const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "with-image" : "no-image"} ${isHero ? "is-hero" : ""} post`;
 ---
@@ -43,6 +56,23 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
                 <h2 class="post-card-display-title">{displayTitle}</h2>
               )}
               {subtitle && <p class="post-card-subtitle">{subtitle}</p>}
+              {subtitle2 && <p class="post-card-subtitle2">{subtitle2}</p>}
+              {buttonLabel && (
+                <div class="post-card-buttons">
+                  <Button
+                    variant="orange"
+                    label={buttonLabel}
+                    href={buttonHref}
+                  />
+                  {skipLinkText && (
+                    <Button
+                      variant="dark"
+                      label={skipLinkText}
+                      href={skipLinkHref}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ) : !isHero ? (
             <div class="post-card-standard">
@@ -67,6 +97,23 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
                 <h2 class="post-card-display-title">{displayTitle}</h2>
               )}
               {subtitle && <p class="post-card-subtitle">{subtitle}</p>}
+              {subtitle2 && <p class="post-card-subtitle2">{subtitle2}</p>}
+              {buttonLabel && (
+                <div class="post-card-buttons">
+                  <Button
+                    variant="orange"
+                    label={buttonLabel}
+                    href={buttonHref}
+                  />
+                  {skipLinkText && (
+                    <Button
+                      variant="dark"
+                      label={skipLinkText}
+                      href={skipLinkHref}
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ) : !isHero ? (
             <div class="post-card-standard">
@@ -112,6 +159,16 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     flex: 1 1 100%;
   }
 
+  .post-card.is-hero {
+    height: 38.5vw;
+  }
+
+  @media (max-width: 700px) {
+    .post-card.is-hero {
+      height: 77vw;
+    }
+  }
+
   /* Photo always shows in full color */
   .post-card.with-image {
     filter: none;
@@ -137,7 +194,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     background: rgba(0, 0, 0, 0.6); /* increased opacity */
     opacity: 1;
     transition: opacity 0.5s cubic-bezier(0.33, 0, 0.2, 1);
-    /* Ensure content is strictly centered and readable */
+    text-align: center;
   }
 
   .post-card.with-image .post-card-content {
@@ -146,6 +203,14 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
       to bottom,
       rgba(103, 47, 12, 0.429),
       /* rgba(138, 63, 16, 0.67), */ rgba(35, 22, 8, 0.99)
+    );
+  }
+
+  .post-card.is-hero.with-image .post-card-content {
+    background: linear-gradient(
+      to bottom,
+      rgba(103, 47, 12, 0.6),
+      rgba(35, 22, 8, 1)
     );
   }
 
@@ -177,6 +242,8 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     gap: 0;
     padding-top: 4rem;
     padding-bottom: 6rem;
+    width: 100%;
+    text-align: center;
   }
 
   @keyframes fadeInContent {
@@ -216,7 +283,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     margin: 0;
     margin-top: 1.5rem;
     font-family: var(--font-sans-serif);
-    font-size: 2.7rem;
+    font-size: 3.24rem;
     font-weight: 400;
     text-transform: lowercase;
     font-variant: small-caps;
@@ -228,13 +295,50 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     animation: fadeInContent 2.5s ease-out 0.8s forwards;
   }
 
+  .post-card-subtitle2 {
+    margin: 0;
+    margin-top: 1rem;
+    font-family: var(--font-serif);
+    font-size: 2.16rem;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 1px;
+    color: rgba(255, 240, 219, 1);
+    text-align: center;
+    text-shadow: 0px 0px 6px black;
+    opacity: 0;
+    animation: fadeInContent 2.5s ease-out 0.95s forwards;
+  }
+
+  .post-card-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 5rem;
+    opacity: 0;
+    animation: fadeInContent 2.5s ease-out 1.1s forwards;
+  }
+
+  @media (max-width: 700px) {
+    .post-card-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+
   @media (max-width: 700px) {
     .post-card-display-title {
       font-size: 6rem;
     }
 
     .post-card-subtitle {
-      font-size: 2.1rem;
+      font-size: 2.52rem;
+    }
+
+    .post-card-subtitle2 {
+      font-size: 1.68rem;
     }
   }
 
