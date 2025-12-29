@@ -5,6 +5,7 @@ import "../styles/content.css"; /* Importing remaining global content styles */
 // Importing here ensures they are included.
 
 import { ClientRouter } from "astro:transitions";
+import { siteConfig } from "../config";
 
 // Migrating logic from src/components/layout.js
 export interface Props {
@@ -14,6 +15,7 @@ export interface Props {
 }
 
 const { title, description } = Astro.props;
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -22,9 +24,9 @@ const { title, description } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="description" content={description || "Clay Theme"} />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/img/cropped-smalllogo.png" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title || "Clay"}</title>
+    <title>{title && title !== siteConfig.siteName ? `${siteConfig.siteName} - ${title}` : siteConfig.siteName}</title>
     <ClientRouter />
     <script is:inline>
       // Theme init
@@ -64,29 +66,29 @@ const { title, description } = Astro.props;
         </div>
         <div class="site-head-center">
           <a class="site-head-logo" href="/">
-            {title || "Clay"}
+            {siteConfig.siteName}
           </a>
         </div>
         <div class="site-head-right">
           <nav id="swup" class="site-head-nav">
             <ul class="nav" role="menu">
-              <li class="nav-home" role="menuitem">
+              <li class:list={["nav-home", { "nav-current": currentPath === "/" }]} role="menuitem">
                 <a href="/">Home</a>
               </li>
-              <li class="nav-home" role="menuitem">
-                <a href="/bio">Bio</a>
+              <li class:list={["nav-home", { "nav-current": currentPath.startsWith("/blog") }]} role="menuitem">
+                <a href="/blog">Journal</a>
               </li>
-              <li class="nav-home" role="menuitem">
-                <a href="/work">Work</a>
+              <li class:list={["nav-home", { "nav-current": currentPath.startsWith("/portfolio") }]} role="menuitem">
+                <a href="/portfolio">Portfolio</a>
               </li>
-              <li class="nav-home" role="menuitem">
-                <a href="/news">News</a>
+              <li class:list={["nav-home", { "nav-current": currentPath.startsWith("/about") }]} role="menuitem">
+                <a href="/about">About</a>
               </li>
-              <li class="nav-home" role="menuitem">
+              <li class:list={["nav-home", { "nav-current": currentPath.startsWith("/contact") }]} role="menuitem">
                 <a href="/contact">Contact</a>
               </li>
-              <li class="nav-home" role="menuitem">
-                <a href="/elements">Elements</a>
+              <li class="nav-home nav-subscribe" role="menuitem">
+                <a href="#subscribe">Subscribe</a>
               </li>
             </ul>
           </nav>
@@ -149,7 +151,7 @@ const { title, description } = Astro.props;
     </main>
 
     <footer class="site-foot">
-      <div>&copy; {new Date().getFullYear()} <a href="/">Clay</a></div>
+      <div>&copy; {new Date().getFullYear()} <a href="/">{siteConfig.siteName}</a></div>
       <div>
         Powered by <a
           href="https://astro.build"
@@ -441,6 +443,17 @@ const { title, description } = Astro.props;
         z-index: 300;
         margin-top: -10px;
         font-size: 1.35rem;
+        opacity: 0;
+        animation: fadeIn 1.5s ease-out 0.2s forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
 
       .site-head-container {
@@ -496,6 +509,11 @@ const { title, description } = Astro.props;
       .nav-current a,
       .site-head a:hover {
         text-decoration: none;
+        opacity: 1;
+      }
+
+      .nav-subscribe a {
+        color: rgb(103, 47, 12);
         opacity: 1;
       }
 

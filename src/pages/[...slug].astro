@@ -9,14 +9,12 @@ export async function getStaticPaths() {
   const pages = await getCollection('pages');
 
   // Pre-fetch other collections for index pages
-  const newsEntries = await getCollection('news');
-  const workEntries = await getCollection('work');
+  const portfolioEntries = await getCollection('portfolio');
   const soldEntries = await getCollection('sold');
 
   // Sort them
   const sortDate = (a, b) => new Date(b.data.date || 0).getTime() - new Date(a.data.date || 0).getTime();
-  const sortedNews = newsEntries.sort(sortDate);
-  const sortedWork = workEntries.sort(sortDate);
+  const sortedPortfolio = portfolioEntries.sort(sortDate);
   const sortedSold = soldEntries.sort(sortDate);
 
   return pages.map(entry => {
@@ -25,12 +23,9 @@ export async function getStaticPaths() {
     let items = [];
     let baseSlug = '';
 
-    if (entry.data.templateKey === 'news-page') {
-        items = sortedNews;
-        baseSlug = 'news';
-    } else if (entry.data.templateKey === 'work-page') {
-        items = sortedWork;
-        baseSlug = 'work';
+    if (entry.data.templateKey === 'portfolio-page') {
+        items = sortedPortfolio;
+        baseSlug = 'portfolio';
     } else if (entry.data.templateKey === 'exhibitions-page') { // maps to sold collection
         items = sortedSold;
         baseSlug = 'sold';
@@ -56,7 +51,7 @@ const templateKey = entry.data.templateKey;
 
 {templateKey === 'contact-page' ? (
     <Contact entry={entry} />
-) : templateKey === 'news-page' || templateKey === 'work-page' || templateKey === 'exhibitions-page' ? (
+) : templateKey === 'portfolio-page' || templateKey === 'exhibitions-page' ? (
     <List entry={entry} items={items} baseSlug={baseSlug} />
 ) : (
     <Page entry={entry} />

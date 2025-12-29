@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "mcp__Sanity__list_datasets",
+      "mcp__Sanity__get_schema"
     ]
   }
 }

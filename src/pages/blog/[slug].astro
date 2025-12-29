@@ -1,0 +1,49 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getBlogPost, getBlogPostSlugs } from "../../lib/sanity";
+import { toHTML } from "@portabletext/to-html";
+
+export async function getStaticPaths() {
+  const slugs = await getBlogPostSlugs();
+  return slugs.map((item: { slug: string }) => ({
+    params: { slug: item.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getBlogPost(slug as string);
+
+if (!post) {
+  return Astro.redirect("/blog");
+}
+
+// Convert Portable Text body to HTML
+const bodyHtml = post.body ? toHTML(post.body) : "";
+---
+
+<Layout title={post.title} description={post.description}>
+  <article class={`post-content ${post.thumbnailUrl ? "" : "no-image"}`}>
+    {post.description && (
+      <p class="post-content-excerpt">{post.description}</p>
+    )}
+
+    {post.thumbnailUrl && (
+      <div class="post-content-image">
+        <img src={post.thumbnailUrl} class="kg-image" alt={post.title} />
+      </div>
+    )}
+
+    <div class="post-content-body" set:html={bodyHtml} />
+
+    <div class="post-link">
+      <div>
+        <a
+          style="display: flex; align-items: center; color: #131313; font-size: 2rem;"
+          href="/blog"
+        >
+          <span>&larr; Back to Blog</span>
+        </a>
+      </div>
+    </div>
+  </article>
+</Layout>

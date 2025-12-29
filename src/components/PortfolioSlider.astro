@@ -1,0 +1,370 @@
+---
+const slides = [
+  { image: "/img/portfolio/clay-images-2.jpg", title: "Temp" },
+  { image: "/img/portfolio/clay-images-3.jpg", title: "Temp" },
+  { image: "/img/portfolio/clay-images-4.jpg", title: "Temp" },
+  { image: "/img/portfolio/clay-images-6.jpg", title: "Temp" },
+  { image: "/img/portfolio/clay-images-7.jpg", title: "Temp" },
+  { image: "/img/portfolio/clay-images-8.jpg", title: "Temp" },
+];
+---
+
+<section class="portfolio-section">
+  <h2 class="portfolio-title">Portfolio</h2>
+
+  <div class="slider-container">
+    <button class="slider-arrow slider-arrow-left" aria-label="Previous slide">
+      <img src="/img/icon/left-arrow.svg" alt="Previous" />
+    </button>
+
+    <div class="slider-viewport">
+      <div class="slider-center-overlay"></div>
+      <div class="slider-track">
+        {/* Clone last few slides at the beginning for seamless loop */}
+        {
+          slides.slice(-3).map((slide, index) => (
+            <div class="slide slide-clone" data-index={`clone-start-${index}`}>
+              <div
+                class="slide-image"
+                style={`background-image: url(${slide.image});`}
+              >
+                <div class="slide-overlay">
+                  <span class="slide-title">{slide.title}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+        {/* Original slides */}
+        {
+          slides.map((slide, index) => (
+            <div class="slide" data-index={index}>
+              <div
+                class="slide-image"
+                style={`background-image: url(${slide.image});`}
+              >
+                <div class="slide-overlay">
+                  <span class="slide-title">{slide.title}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+        {/* Clone first few slides at the end for seamless loop */}
+        {
+          slides.slice(0, 3).map((slide, index) => (
+            <div class="slide slide-clone" data-index={`clone-end-${index}`}>
+              <div
+                class="slide-image"
+                style={`background-image: url(${slide.image});`}
+              >
+                <div class="slide-overlay">
+                  <span class="slide-title">{slide.title}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <button class="slider-arrow slider-arrow-right" aria-label="Next slide">
+      <img src="/img/icon/right-arrow.svg" alt="Next" />
+    </button>
+  </div>
+</section>
+
+<style>
+  .portfolio-section {
+    /* margin: 0.25rem 1rem; */
+    /* padding: 0.5rem 0; */
+    min-height: 30vw;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .portfolio-title {
+    margin: 0 0 2rem 0;
+    font-size: 4.5rem;
+    font-family: "Legan", var(--font-sans-serif);
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-weight: 300;
+    text-align: center;
+    color: var(--color-base);
+  }
+
+  .slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 25vw;
+    margin: 0 1rem;
+  }
+
+  .slider-viewport {
+    overflow: hidden;
+    flex: 1;
+    height: 100%;
+    position: relative;
+  }
+
+  .slider-viewport::before,
+  .slider-viewport::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 33%;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .slider-viewport::before {
+    left: 0;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.1) 90%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+  }
+
+  .slider-viewport::after {
+    right: 0;
+    background: linear-gradient(
+      to left,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.1) 90%,
+      rgba(255, 255, 255, 0.01) 100%
+    );
+  }
+
+  .slider-center-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 33%;
+    right: 33%;
+    background: rgba(255, 255, 255, 0.01);
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .slider-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .slide {
+    flex: 0 0 33.333%;
+    padding: 0 0.5rem;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .slide-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(103, 47, 12, 0.429),
+      rgba(35, 22, 8, 0.99)
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide-title {
+    font-family: "Legan", var(--font-sans-serif);
+    font-size: 3rem;
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-weight: 300;
+    color: rgba(255, 240, 219, 1);
+    text-shadow: 0px 0px 6px black;
+  }
+
+  .slider-arrow {
+    position: absolute;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-base);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .slider-arrow:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+  }
+
+  .slider-arrow img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .slider-arrow-left {
+    left: 2rem;
+  }
+
+  .slider-arrow-right {
+    right: 2rem;
+  }
+
+  /* Mobile */
+  @media (max-width: 700px) {
+    .portfolio-section {
+      min-height: 70vw;
+    }
+
+    .portfolio-title {
+      font-size: 3rem;
+    }
+
+    .slider-container {
+      height: 50vw;
+    }
+
+    .slide {
+      flex: 0 0 80%;
+    }
+
+    .slide-title {
+      font-size: 2rem;
+    }
+
+    .slider-arrow {
+      width: 36px;
+      height: 36px;
+    }
+  }
+</style>
+
+<script>
+  function initSlider() {
+    const track = document.querySelector(".slider-track") as HTMLElement;
+    const allSlides = document.querySelectorAll(".slide");
+    const leftArrow = document.querySelector(".slider-arrow-left");
+    const rightArrow = document.querySelector(".slider-arrow-right");
+    const container = document.querySelector(".slider-container");
+
+    if (!track || allSlides.length === 0) return;
+
+    let autoScrollInterval: number | null = null;
+    let isPaused = false;
+    let isTransitioning = false;
+
+    const cloneCount = 3; // Number of clones at each end
+    const realSlideCount = 6; // Original number of slides
+    const totalSlides = allSlides.length; // Total including clones
+    const slideWidth = 100 / 3; // 33.333% per slide
+
+    // Start at first real slide (after the clones at the beginning)
+    let currentIndex = cloneCount;
+
+    function updateSlider(animate = true) {
+      if (!animate) {
+        track.style.transition = "none";
+      } else {
+        track.style.transition = "transform 0.5s ease-in-out";
+      }
+      const offset = -currentIndex * slideWidth;
+      track.style.transform = `translateX(${offset}%)`;
+    }
+
+    function handleTransitionEnd() {
+      isTransitioning = false;
+      // If we're at the end clones, jump to real slides
+      if (currentIndex >= cloneCount + realSlideCount) {
+        currentIndex = cloneCount;
+        updateSlider(false);
+      }
+      // If we're at the start clones, jump to end of real slides
+      if (currentIndex < cloneCount) {
+        currentIndex = cloneCount + realSlideCount - 1;
+        updateSlider(false);
+      }
+    }
+
+    function nextSlide() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      currentIndex++;
+      updateSlider();
+    }
+
+    function prevSlide() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      currentIndex--;
+      updateSlider();
+    }
+
+    function startAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+      autoScrollInterval = window.setInterval(() => {
+        if (!isPaused) {
+          nextSlide();
+        }
+      }, 5000);
+    }
+
+    function stopAutoScroll() {
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+      }
+    }
+
+    // Listen for transition end to handle infinite loop
+    track.addEventListener("transitionend", handleTransitionEnd);
+
+    // Arrow click handlers
+    leftArrow?.addEventListener("click", () => {
+      nextSlide();
+      startAutoScroll();
+    });
+
+    rightArrow?.addEventListener("click", () => {
+      prevSlide();
+      startAutoScroll();
+    });
+
+    // Pause on hover
+    container?.addEventListener("mouseenter", () => {
+      isPaused = true;
+    });
+
+    container?.addEventListener("mouseleave", () => {
+      isPaused = false;
+    });
+
+    // Initialize position and start auto-scroll
+    updateSlider(false);
+    startAutoScroll();
+  }
+
+  // Initialize on page load and after view transitions
+  document.addEventListener("astro:page-load", initSlider);
+</script>

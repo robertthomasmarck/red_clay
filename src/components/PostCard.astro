@@ -4,34 +4,85 @@ export interface Props {
   post: any; // using any for now, better to use CollectionEntry
   slug: string;
   subtitle?: string;
+  displayTitle?: string;
+  hideBackground?: boolean;
+  disableLink?: boolean;
 }
 
-const { count, post, slug, subtitle } = Astro.props;
+const {
+  count,
+  post,
+  slug,
+  subtitle,
+  displayTitle,
+  hideBackground,
+  disableLink,
+} = Astro.props;
 const thumbnail = post.data.thumbnail;
 const title = post.data.title;
 const logo = post.data.logo;
 const isLarge = count % 3 === 0;
+const isHero = count === 1;
 
 // Construct background image style
-const bgStyle = thumbnail ? `background-image: url(${thumbnail});` : "";
-const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "with-image" : "no-image"} post`;
+const bgStyle =
+  thumbnail && !hideBackground ? `background-image: url(${thumbnail});` : "";
+const hasImage = thumbnail && !hideBackground;
+const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "with-image" : "no-image"} ${isHero ? "is-hero" : ""} post`;
 ---
 
 <article class={`${postClass} fade-in-on-scroll`} style={bgStyle}>
-  <a href={`/${slug}`} class="post-card-link">
-    <div class={`post-card-content ${subtitle ? "with-subtitle" : ""}`}>
-      {
-        logo ? (
-          <div class="post-card-inner">
-            <img src={logo} alt={title} class="post-card-logo" />
-            {subtitle && <p class="post-card-subtitle">{subtitle}</p>}
-          </div>
-        ) : (
-          <h2 class="post-card-title">{title}</h2>
-        )
-      }
-    </div>
-  </a>
+  {
+    disableLink ? (
+      <div class="post-card-link">
+        <div class={`post-card-content ${subtitle ? "with-subtitle" : ""}`}>
+          {isHero && logo ? (
+            <div class="post-card-inner">
+              <img src={logo} alt={title} class="post-card-logo" />
+              {displayTitle && (
+                <h2 class="post-card-display-title">{displayTitle}</h2>
+              )}
+              {subtitle && <p class="post-card-subtitle">{subtitle}</p>}
+            </div>
+          ) : !isHero ? (
+            <div class="post-card-standard">
+              <h2 class="post-card-standard-title">{title}</h2>
+              <p class="post-card-description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
+            </div>
+          ) : (
+            <h2 class="post-card-title">{title}</h2>
+          )}
+        </div>
+      </div>
+    ) : (
+      <a href={`/${slug}`} class="post-card-link">
+        <div class={`post-card-content ${subtitle ? "with-subtitle" : ""}`}>
+          {isHero && logo ? (
+            <div class="post-card-inner">
+              <img src={logo} alt={title} class="post-card-logo" />
+              {displayTitle && (
+                <h2 class="post-card-display-title">{displayTitle}</h2>
+              )}
+              {subtitle && <p class="post-card-subtitle">{subtitle}</p>}
+            </div>
+          ) : !isHero ? (
+            <div class="post-card-standard">
+              <h2 class="post-card-standard-title">{title}</h2>
+              <p class="post-card-description">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </p>
+            </div>
+          ) : (
+            <h2 class="post-card-title">{title}</h2>
+          )}
+        </div>
+      </a>
+    )
+  }
 </article>
 
 <style>
@@ -55,27 +106,15 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
       flex: 1 1 100%;
       height: 70vw;
     }
-
-    /* Mobile: Remove grayscale, show full color */
-    .post-card.with-image {
-      filter: none;
-    }
   }
 
   .post-card-large {
     flex: 1 1 100%;
   }
 
-  /* Desktop: Start with grayscale photo */
+  /* Photo always shows in full color */
   .post-card.with-image {
-    filter: grayscale(0.8);
-    transition: filter 2s ease;
-  }
-
-  /* Desktop: On hover, remove grayscale (show full color) */
-  .post-card.with-image:hover,
-  .post-card.with-image.has-hovered {
-    filter: grayscale(0);
+    filter: none;
   }
 
   .post-card-link {
@@ -110,16 +149,23 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     );
   }
 
+  .post-card:not(.is-hero) .post-card-content {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
   .post-card-logo {
-    max-height: 720px;
-    max-width: 40%;
+    max-height: 540px;
+    max-width: 30%;
     object-fit: contain;
+    opacity: 0;
+    animation: fadeInContent 2.5s ease-out 0.5s forwards;
   }
 
   @media (max-width: 850px) {
     .post-card-logo {
-      max-height: 1080px;
-      max-width: 60%;
+      max-height: 810px;
+      max-width: 45%;
     }
   }
 
@@ -128,11 +174,47 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 0;
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+  }
+
+  @keyframes fadeInContent {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .post-card-display-title {
+    margin: 0;
+    font-family: "Legan", var(--font-sans-serif);
+    font-size: 8.625rem;
+    font-weight: 300;
+    text-transform: lowercase;
+    font-variant: small-caps;
+    letter-spacing: 2px;
+    color: rgba(255, 240, 219, 1);
+    text-align: center;
+    text-shadow: 0px 0px 6px black;
+    opacity: 0;
+    animation: fadeInContent 2.5s ease-out 0.65s forwards;
+  }
+
+  .post-card-display-title::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 1px;
+    background-color: rgba(255, 240, 219, 1);
+    margin: 1rem auto 0;
   }
 
   .post-card-subtitle {
     margin: 0;
+    margin-top: 1.5rem;
     font-family: var(--font-sans-serif);
     font-size: 2.7rem;
     font-weight: 400;
@@ -142,9 +224,15 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     color: rgba(255, 240, 219, 1);
     text-align: center;
     text-shadow: 0px 0px 6px black;
+    opacity: 0;
+    animation: fadeInContent 2.5s ease-out 0.8s forwards;
   }
 
   @media (max-width: 700px) {
+    .post-card-display-title {
+      font-size: 6rem;
+    }
+
     .post-card-subtitle {
       font-size: 2.1rem;
     }
@@ -162,16 +250,6 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     }
   }
 
-  .post-card-link:hover .post-card-content {
-    opacity: 1;
-    transition: opacity 0.3s cubic-bezier(0.33, 0, 0.2, 1);
-    background: linear-gradient(
-      to bottom,
-      rgba(103, 47, 12, 0.429),
-      /* rgba(138, 63, 16, 0.67), */ rgba(35, 22, 8, 0.99)
-    );
-  }
-
   .post-card-title {
     margin: 0;
     display: inline-block;
@@ -184,6 +262,59 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     font-variant: small-caps;
     text-transform: lowercase;
     font-weight: 300;
+  }
+
+  /* Standard PostCard layout (non-hero cards) */
+  .post-card-standard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: 16.67% 2rem 2rem 16.67%;
+  }
+
+  .post-card-standard-title {
+    margin: 0 0 1rem 0;
+    font-size: 4.5rem;
+    font-family: "Legan", var(--font-sans-serif);
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-weight: 300;
+    text-align: left;
+    color: rgba(255, 240, 219, 1);
+    text-shadow: 0px 0px 6px black;
+  }
+
+  .post-card-standard-title::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 1px;
+    background-color: rgba(255, 240, 219, 1);
+    margin: 1rem 0 0;
+  }
+
+  .post-card-description {
+    width: 70%;
+    text-align: left;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    line-height: 1.8;
+    color: rgba(255, 240, 219, 1);
+    text-shadow: 0px 0px 4px black;
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 700px) {
+    .post-card-standard-title {
+      font-size: 3rem;
+    }
+
+    .post-card-description {
+      width: 90%;
+      font-size: 1.4rem;
+    }
   }
 
   /* Posts without images */
@@ -204,6 +335,22 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     justify-content: flex-start;
     align-items: flex-start;
     padding: 4vw;
+  }
+
+  /* Hero cards without background should still be centered */
+  .post-card.is-hero.no-image .post-card-content {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(103, 47, 12, 1),
+      rgba(35, 22, 8, 1)
+    );
+  }
+
+  .post-card.is-hero.no-image::before {
+    display: none;
   }
 
   .post-card.no-image .post-card-title {
@@ -227,15 +374,3 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${thumbnail ? "
     }
   }
 </style>
-
-<script>
-  document.querySelectorAll(".post-card.with-image").forEach((card) => {
-    card.addEventListener(
-      "mouseenter",
-      () => {
-        card.classList.add("has-hovered");
-      },
-      { once: true }
-    );
-  });
-</script>

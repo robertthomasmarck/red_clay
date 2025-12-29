@@ -3,8 +3,8 @@
 
 /* Page Load Animation - Applied to main content wrapper */
 .transition-fade {
-    opacity: 1;
-    animation: slideUp 1s ease-out 0.3s forwards;
+    opacity: 0;
+    animation: fadeInSlideUp 1.5s ease-out 0.2s forwards;
     transform: translate3d(0, 1.5vh, 0);
 }
 
@@ -12,11 +12,13 @@ html.is-animating .transition-fade {
     opacity: 0;
 }
 
-@keyframes slideUp {
+@keyframes fadeInSlideUp {
     0% {
+        opacity: 0;
         transform: translate3d(0, 1.5vh, 0);
     }
     100% {
+        opacity: 1;
         transform: translate3d(0, 0, 0);
     }
 }

@@ -1,0 +1,315 @@
+---
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+---
+
+<section id="contact-section" class="contact-form-section">
+  <h2 class="contact-form-title">Contact</h2>
+
+  <form id="contact-form" class="contact-form-element">
+    <div class="row gtr-uniform">
+      <!-- Name field: full width -->
+      <div class="col-12">
+        <input
+          type="text"
+          name="name"
+          id="contact-name"
+          placeholder="Name"
+          required
+          autocomplete="name"
+        />
+      </div>
+
+      <!-- Email field: half width on desktop -->
+      <div class="col-6 col-12-xsmall">
+        <input
+          type="email"
+          name="email"
+          id="contact-email"
+          placeholder="Email"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <!-- Phone field: half width on desktop -->
+      <div class="col-6 col-12-xsmall">
+        <input
+          type="tel"
+          name="phone"
+          id="contact-phone"
+          placeholder="Phone Number"
+          required
+          autocomplete="tel"
+        />
+      </div>
+
+      <!-- Message field: full width -->
+      <div class="col-12">
+        <textarea
+          name="message"
+          id="contact-message"
+          placeholder="Enter your message"
+          rows="6"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Button and CAPTCHA row -->
+      <div class="col-12 button-captcha-row">
+        <!-- Submit button on left -->
+        <div class="button-wrapper">
+          <button
+            type="submit"
+            id="submit-btn"
+            class="btn-submit"
+            disabled
+          >
+            SEND
+          </button>
+        </div>
+
+        <!-- Cloudflare Turnstile widget on right -->
+        <div class="captcha-wrapper">
+          <div
+            class="cf-turnstile"
+            data-sitekey={turnstileSiteKey}
+            data-callback="onTurnstileSuccess"
+            data-theme="light"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Form status messages -->
+      <div class="col-12">
+        <div id="form-status" class="form-status" aria-live="polite"></div>
+      </div>
+    </div>
+  </form>
+</section>
+
+<!-- Cloudflare Turnstile Script -->
+<script is:inline>
+  // Define callback globally BEFORE Turnstile loads
+  window.turnstileVerified = false;
+  window.turnstileToken = '';
+
+  window.onTurnstileSuccess = function(token) {
+    window.turnstileVerified = true;
+    window.turnstileToken = token;
+    var submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+      submitBtn.disabled = false;
+    }
+  };
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('contact-form');
+    var submitBtn = document.getElementById('submit-btn');
+    var formStatus = document.getElementById('form-status');
+
+    if (!form || !submitBtn || !formStatus) return;
+
+    // Enable button if no Turnstile site key (local development)
+    var turnstileWidget = document.querySelector('.cf-turnstile');
+    if (turnstileWidget && !turnstileWidget.getAttribute('data-sitekey')) {
+      submitBtn.disabled = false;
+      window.turnstileVerified = true;
+    }
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (!window.turnstileVerified) {
+        formStatus.textContent = 'Please complete the CAPTCHA verification.';
+        formStatus.className = 'form-status error';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      formStatus.textContent = '';
+      formStatus.className = 'form-status';
+
+      try {
+        var formData = new FormData(form);
+        formData.append('cf-turnstile-response', window.turnstileToken);
+
+        var response = await fetch('/api/contact', {
+          method: 'POST',
+          body: formData,
+        });
+
+        var result = await response.json();
+
+        if (result.success) {
+          formStatus.textContent = 'Thank you! Your message has been sent successfully.';
+          formStatus.className = 'form-status success';
+          form.reset();
+
+          if (window.turnstile) {
+            window.turnstile.reset();
+          }
+          window.turnstileVerified = false;
+          submitBtn.disabled = true;
+        } else {
+          formStatus.textContent = result.error || 'An error occurred. Please try again.';
+          formStatus.className = 'form-status error';
+          submitBtn.disabled = false;
+        }
+      } catch (error) {
+        formStatus.textContent = 'An error occurred. Please try again.';
+        formStatus.className = 'form-status error';
+        submitBtn.disabled = false;
+      }
+
+      submitBtn.textContent = 'Send';
+    });
+  });
+</script>
+
+<style>
+  .contact-form-section {
+    padding: 2rem 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    scroll-margin-top: 20vh;
+  }
+
+  .contact-form-title {
+    margin: 0 0 2rem 0;
+    font-size: 4.5rem;
+    font-family: "Legan", var(--font-sans-serif);
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-weight: 300;
+    text-align: center;
+    color: var(--color-base);
+  }
+
+  /* Submit button - matches Button.astro orange variant */
+  .btn-submit {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 5rem !important;
+    padding: 0 6.75rem !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 12px !important;
+    cursor: pointer;
+
+    font-family: var(--font-sans-serif) !important;
+    font-weight: 400 !important;
+    font-size: 1.64rem !important;
+    text-transform: none !important;
+    letter-spacing: 1px !important;
+    line-height: normal !important;
+
+    background-color: rgba(138, 63, 16, 1) !important;
+    color: #ffffff !important;
+
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: filter 0.3s ease, transform 0.2s ease, opacity 0.3s ease;
+  }
+
+  .btn-submit:hover:not(:disabled) {
+    filter: brightness(1.2);
+    text-decoration: none;
+    box-shadow: none;
+  }
+
+  .btn-submit:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 700px) {
+    .contact-form-section {
+      padding: 1.5rem 1rem;
+    }
+
+    .contact-form-title {
+      font-size: 3rem;
+    }
+
+    .btn-submit {
+      height: 4.25rem !important;
+      padding: 0 4.2rem !important;
+      font-size: 1.4rem !important;
+    }
+  }
+
+  /* Form status messages */
+  .form-status {
+    padding: 1rem;
+    border-radius: var(--radius);
+    font-family: var(--font-sans-serif);
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .form-status.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+  }
+
+  .form-status.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #c62828;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+  }
+
+  .form-status:empty {
+    display: none;
+  }
+
+  /* Button and CAPTCHA row layout */
+  .button-captcha-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .button-wrapper {
+    flex: 0 0 auto;
+  }
+
+  .captcha-wrapper {
+    flex: 0 0 auto;
+  }
+
+  /* Turnstile widget container */
+  .cf-turnstile {
+    margin: 0;
+  }
+
+  @media (max-width: 700px) {
+    .button-captcha-row {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+
+    .button-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .captcha-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+</style>

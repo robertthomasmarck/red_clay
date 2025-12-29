@@ -2,16 +2,18 @@
 import Layout from "../layouts/Layout.astro";
 import PostCard from "../components/PostCard.astro";
 import ContentRow from "../components/ContentRow.astro";
+import PortfolioSlider from "../components/PortfolioSlider.astro";
+import TestimonialsSlider from "../components/TestimonialsSlider.astro";
+import ContactForm from "../components/ContactForm.astro";
 import { getCollection } from "astro:content";
 
 // Fetch all collections
 const allPages = await getCollection("pages");
-const allNews = await getCollection("news");
-const allWork = await getCollection("work");
+const allPortfolio = await getCollection("portfolio");
 const allSold = await getCollection("sold");
 
 // Combine for filtering
-const allContent = [...allPages, ...allNews, ...allWork, ...allSold];
+const allContent = [...allPages, ...allPortfolio, ...allSold];
 
 // Filter for pagetype containing 'main' and sort by number
 const posts = allContent
@@ -30,6 +32,13 @@ const title = indexPage?.data.title || "Clay";
 const description = indexPage?.data.description;
 
 let postCounter = 0;
+
+// Get hero post for footer banner
+const heroPost = posts[0];
+let heroSlug = heroPost?.slug || "";
+if (heroPost?.collection === "portfolio")
+  heroSlug = `portfolio/${heroPost.slug}`;
+if (heroPost?.collection === "sold") heroSlug = `sold/${heroPost.slug}`;
 ---
 
 <Layout title={title} description={description}>
@@ -45,8 +54,7 @@ let postCounter = 0;
         // Here I need to generate the same link.
 
         let slug = post.slug;
-        if (post.collection === "work") slug = `work/${post.slug}`;
-        if (post.collection === "news") slug = `news/${post.slug}`;
+        if (post.collection === "portfolio") slug = `portfolio/${post.slug}`;
         if (post.collection === "sold") slug = `sold/${post.slug}`;
         // Pages collection: 'bio' -> 'bio'.
 
@@ -60,27 +68,62 @@ let postCounter = 0;
               count={postCounter}
               post={post}
               slug={slug}
+              displayTitle={postCounter === 1 ? "Red Path Design" : undefined}
               subtitle={
                 postCounter === 1 ? "Websites for Therapists" : undefined
               }
             />
             {postCounter === 1 && (
               <ContentRow
-                title="Title Goes Here"
+                title="Title Goes Hereeee"
                 text={`1 In the beginning God created the heavens and the earth. 2 Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.`}
+                buttonHref="#contact-section"
+                skipLinkHref="/blog"
               />
             )}
             {postCounter === 2 && (
-              <ContentRow
-                title="Title Goes Here"
-                text={`3 And God said, "Let there be light," and there was light. 4 God saw that the light was good, and he separated the light from the darkness. 5 God called the light "day," and the darkness he called "night." And there was evening, and there was morning—the first day.`}
-                reversed
-                imageSrc="/img/clay-images-12.jpg"
-              />
+              <>
+                <PortfolioSlider />
+                <ContentRow
+                  title="Title Goes Here"
+                  text={`3 And God said, "Let there be light," and there was light. 4 God saw that the light was good, and he separated the light from the darkness. 5 God called the light "day," and the darkness he called "night." And there was evening, and there was morning—the first day.`}
+                  reversed
+                  imageSrc="/img/clay-images-12.jpg"
+                  buttonHref="#contact-section"
+                  skipLinkHref="/blog"
+                />
+                <TestimonialsSlider />
+              </>
             )}
           </>
         );
       })
     }
   </div>
+  <ContactForm />
+  {
+    heroPost && (
+      <div class="post-feed footer-banner">
+        <PostCard
+          count={1}
+          post={heroPost}
+          slug={heroSlug}
+          hideBackground
+          disableLink
+        />
+      </div>
+    )
+  }
 </Layout>
+
+<style>
+  .footer-banner :global(.post-card) {
+    height: 19.6vw;
+  }
+
+  @media (max-width: 700px) {
+    .footer-banner :global(.post-card) {
+      height: 39.2vw;
+    }
+  }
+</style>

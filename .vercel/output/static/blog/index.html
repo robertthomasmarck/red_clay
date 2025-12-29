@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Latest posts and updates"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.16.5"><title>Red Path Design - Blog</title><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/_astro/ClientRouter.astro_astro_type_script_index_0_lang.DeOk0y2s.js"></script><script>
+      // Theme init
+      const theme = (() => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
+        }
+        return "light";
+      })();
+      if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+    </script><link rel="stylesheet" href="/_astro/_slug_.BQShUWR8.css">
+<link rel="stylesheet" href="/_astro/index.Clh6t0wC.css"></head> <body class="site-wrapper"> <header class="site-head"> <div class="site-head-container"> <a class="nav-burger" href="#"> <div class="hamburger hamburger--collapse" aria-label="Menu" role="button" aria-controls="navigation"> <div class="hamburger-box"> <div class="hamburger-inner"></div> </div> </div> </a> <div class="site-head-left"> <!-- Empty left side --> </div> <div class="site-head-center"> <a class="site-head-logo" href="/"> Red Path Design </a> </div> <div class="site-head-right"> <nav id="swup" class="site-head-nav"> <ul class="nav" role="menu"> <li class="nav-home" role="menuitem"> <a href="/">Home</a> </li> <li class="nav-home" role="menuitem"> <a href="/about">About</a> </li> <li class="nav-home" role="menuitem"> <a href="/portfolio">Portfolio</a> </li> <li class="nav-home" role="menuitem"> <a href="/blog">Blog</a> </li> <li class="nav-home" role="menuitem"> <a href="/contact">Contact</a> </li> <li class="nav-home" role="menuitem"> <a href="/elements">Elements</a> </li> </ul> </nav> <div class="social-links"> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode"> <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg> <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </button> </div> </div> </div> </header> <main id="site-main" class="site-main"> <div id="swup" class="transition-fade">   <div class="blog-banner" style="background-image: url('/img/red-rock-2.jpeg');" data-astro-cid-5tznm7mj> <div class="banner-overlay" data-astro-cid-5tznm7mj> <h1 class="banner-title" data-astro-cid-5tznm7mj>Red Path Design Blog</h1> </div> </div>  <div class="blog-content-wrapper" data-astro-cid-5tznm7mj> <!-- Sidebar --> <aside class="blog-sidebar" data-astro-cid-5tznm7mj> <div class="sidebar-image-container" data-astro-cid-5tznm7mj> <div class="sidebar-image-placeholder" data-astro-cid-5tznm7mj></div> </div> <div class="sidebar-text" data-astro-cid-5tznm7mj> Welcome to our blog. Stay tuned for the latest updates and stories. </div> </aside> <!-- Blog Posts --> <main class="blog-posts" data-astro-cid-5tznm7mj> <article class="blog-post" data-post-id="900f58d7-67da-48f9-928e-70573893212f" data-astro-cid-5tznm7mj>  <h2 class="post-title" data-astro-cid-5tznm7mj> <a href="/blog/welcome-to-the-blog" data-astro-cid-5tznm7mj>Welcome to the Blog</a> </h2>  <hr class="post-divider" data-astro-cid-5tznm7mj> <div class="post-body" data-astro-cid-5tznm7mj> <div class="post-body-truncated" data-astro-cid-5tznm7mj><p>Welcome to the Red Path Design blog! This is where we&#x27;ll share our latest work, creative process, and behind-the-scenes stories.</p><p>Stay tuned for more updates coming soon.</p></div>  </div> </article> </main> </div>  </div> </main> <footer class="site-foot"> <div>&copy; 2025 <a href="/">Red Path Design</a></div> <div>
+Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a> | Licensed under <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT</a> </div> </footer> <script type="module" src="/_astro/Layout.astro_astro_type_script_index_0_lang.j0a47UWP.js"></script>  </body> </html>  <script>
+  // Sticky hover effect for banner (like postcards)
+  const blogBanner = document.querySelector('.blog-banner');
+  if (blogBanner) {
+    blogBanner.addEventListener('mouseenter', () => {
+      blogBanner.classList.add('has-hovered');
+    }, { once: true });
+  }
+
+  // Read more/less functionality
+  document.querySelectorAll('.read-more-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const postBody = button.closest('.post-body');
+      if (!postBody) return;
+
+      const truncatedContent = postBody.querySelector('.post-body-truncated');
+      const fullContent = postBody.querySelector('.post-body-full');
+      const isExpanded = button.getAttribute('data-expanded') === 'true';
+
+      if (isExpanded) {
+        // Collapse
+        truncatedContent.style.display = 'block';
+        fullContent.style.display = 'none';
+        button.textContent = 'Read More';
+        button.setAttribute('data-expanded', 'false');
+      } else {
+        // Expand
+        truncatedContent.style.display = 'none';
+        fullContent.style.display = 'block';
+        button.textContent = 'Read Less';
+        button.setAttribute('data-expanded', 'true');
+      }
+    });
+  });
+</script>

@@ -1,0 +1,423 @@
+---
+import { getCollection } from 'astro:content';
+
+const allTestimonials = await getCollection('testimonials');
+const testimonials = allTestimonials
+  .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
+  .slice(0, 6);
+---
+
+<section class="testimonials-section">
+  <h2 class="testimonials-title">Testimonials</h2>
+
+  <div class="testimonials-slider-container">
+    <button class="testimonials-arrow testimonials-arrow-left" aria-label="Previous testimonial">
+      <img src="/img/icon/left-arrow.svg" alt="Previous" />
+    </button>
+
+    <div class="testimonials-viewport">
+      <div class="testimonials-track">
+        {/* Clone last 3 slides at beginning for seamless loop */}
+        {testimonials.slice(-3).map((t, index) => (
+          <div class="testimonial-slide testimonial-clone" data-index={`clone-start-${index}`}>
+            <div class="testimonial-card">
+              <div class="testimonial-portrait">
+                {t.data.portrait ? (
+                  <img src={t.data.portrait} alt={t.data.name} />
+                ) : (
+                  <div class="portrait-placeholder"></div>
+                )}
+              </div>
+              <div class="testimonial-divider"></div>
+              <blockquote class="testimonial-quote">
+                "{t.data.quote}"
+              </blockquote>
+              <div class="testimonial-attribution">
+                <span class="testimonial-name">{t.data.name}</span>
+                {t.data.company && (
+                  <span class="testimonial-company">{t.data.company}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        {/* Original 6 testimonials */}
+        {testimonials.map((t, index) => (
+          <div class="testimonial-slide" data-index={index}>
+            <div class="testimonial-card">
+              <div class="testimonial-portrait">
+                {t.data.portrait ? (
+                  <img src={t.data.portrait} alt={t.data.name} />
+                ) : (
+                  <div class="portrait-placeholder"></div>
+                )}
+              </div>
+              <div class="testimonial-divider"></div>
+              <blockquote class="testimonial-quote">
+                "{t.data.quote}"
+              </blockquote>
+              <div class="testimonial-attribution">
+                <span class="testimonial-name">{t.data.name}</span>
+                {t.data.company && (
+                  <span class="testimonial-company">{t.data.company}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        {/* Clone first 3 slides at end for seamless loop */}
+        {testimonials.slice(0, 3).map((t, index) => (
+          <div class="testimonial-slide testimonial-clone" data-index={`clone-end-${index}`}>
+            <div class="testimonial-card">
+              <div class="testimonial-portrait">
+                {t.data.portrait ? (
+                  <img src={t.data.portrait} alt={t.data.name} />
+                ) : (
+                  <div class="portrait-placeholder"></div>
+                )}
+              </div>
+              <div class="testimonial-divider"></div>
+              <blockquote class="testimonial-quote">
+                "{t.data.quote}"
+              </blockquote>
+              <div class="testimonial-attribution">
+                <span class="testimonial-name">{t.data.name}</span>
+                {t.data.company && (
+                  <span class="testimonial-company">{t.data.company}</span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <button class="testimonials-arrow testimonials-arrow-right" aria-label="Next testimonial">
+      <img src="/img/icon/right-arrow.svg" alt="Next" />
+    </button>
+  </div>
+</section>
+
+<style>
+  .testimonials-section {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+  }
+
+  .testimonials-title {
+    margin: 0 0 2rem 0;
+    font-size: 4.5rem;
+    font-family: "Legan", var(--font-sans-serif);
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-weight: 300;
+    text-align: center;
+    color: var(--color-base);
+  }
+
+  .testimonials-slider-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 380px;
+    margin: 0 1rem;
+  }
+
+  .testimonials-viewport {
+    overflow: hidden;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    /* No edge fade effects - clean look for testimonials */
+  }
+
+  .testimonials-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .testimonial-slide {
+    flex: 0 0 33.333%;
+    padding: 0 0.75rem;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .testimonial-card {
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-sizing: border-box;
+    /* No gradient overlay - plain card */
+  }
+
+  /* Portrait styles */
+  .testimonial-portrait {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .testimonial-portrait img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .portrait-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #cccccc;
+    border-radius: 50%;
+  }
+
+  /* Divider line */
+  .testimonial-divider {
+    width: 40px;
+    height: 2px;
+    background-color: var(--color-base);
+    opacity: 0.3;
+    margin: 1rem 0;
+    flex-shrink: 0;
+  }
+
+  /* Quote text */
+  .testimonial-quote {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: var(--color-base);
+    margin: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-style: italic;
+  }
+
+  /* Attribution */
+  .testimonial-attribution {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 1rem;
+    flex-shrink: 0;
+  }
+
+  .testimonial-name {
+    font-family: var(--font-sans-serif);
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--color-base);
+  }
+
+  .testimonial-company {
+    font-family: var(--font-sans-serif);
+    font-size: 1.35rem;
+    color: var(--color-base);
+    opacity: 0.6;
+  }
+
+  /* Arrow buttons */
+  .testimonials-arrow {
+    position: absolute;
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-base);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .testimonials-arrow:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+  }
+
+  .testimonials-arrow img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .testimonials-arrow-left {
+    left: 2rem;
+  }
+
+  .testimonials-arrow-right {
+    right: 2rem;
+  }
+
+  /* Mobile: Stack vertically, disable slider */
+  @media (max-width: 700px) {
+    .testimonials-slider-container {
+      height: auto;
+      flex-direction: column;
+    }
+
+    .testimonials-viewport {
+      overflow: visible;
+    }
+
+    .testimonials-track {
+      flex-direction: column;
+      transform: none !important;
+      transition: none;
+    }
+
+    .testimonial-slide {
+      flex: 0 0 auto;
+      width: 100%;
+      padding: 0.5rem 0;
+    }
+
+    .testimonial-clone {
+      display: none;
+    }
+
+    .testimonials-arrow {
+      display: none;
+    }
+
+    .testimonial-card {
+      padding: 1.5rem;
+    }
+
+    .testimonials-title {
+      font-size: 3rem;
+    }
+
+    .testimonial-quote {
+      font-size: 1.65rem;
+    }
+
+    .testimonial-name {
+      font-size: 1.2rem;
+    }
+
+    .testimonial-company {
+      font-size: 1.05rem;
+    }
+  }
+</style>
+
+<script>
+  function initTestimonialsSlider() {
+    const track = document.querySelector(".testimonials-track") as HTMLElement;
+    const allSlides = document.querySelectorAll(".testimonial-slide");
+    const leftArrow = document.querySelector(".testimonials-arrow-left");
+    const rightArrow = document.querySelector(".testimonials-arrow-right");
+    const container = document.querySelector(".testimonials-slider-container");
+
+    if (!track || allSlides.length === 0) return;
+
+    // Check if mobile (disable slider)
+    const isMobile = window.matchMedia("(max-width: 700px)").matches;
+    if (isMobile) return;
+
+    let autoScrollInterval: number | null = null;
+    let isPaused = false;
+    let isTransitioning = false;
+
+    const cloneCount = 3;
+    const realSlideCount = 6;
+    const slideWidth = 100 / 3; // 33.333%
+
+    let currentIndex = cloneCount; // Start at first real slide
+
+    function updateSlider(animate = true) {
+      if (!animate) {
+        track.style.transition = "none";
+      } else {
+        track.style.transition = "transform 0.5s ease-in-out";
+      }
+      const offset = -currentIndex * slideWidth;
+      track.style.transform = `translateX(${offset}%)`;
+    }
+
+    function handleTransitionEnd() {
+      isTransitioning = false;
+      // If at end clones, jump to real slides
+      if (currentIndex >= cloneCount + realSlideCount) {
+        currentIndex = cloneCount;
+        updateSlider(false);
+      }
+      // If at start clones, jump to end of real slides
+      if (currentIndex < cloneCount) {
+        currentIndex = cloneCount + realSlideCount - 1;
+        updateSlider(false);
+      }
+    }
+
+    function nextSlide() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      currentIndex++;
+      updateSlider();
+    }
+
+    function prevSlide() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      currentIndex--;
+      updateSlider();
+    }
+
+    function startAutoScroll() {
+      if (autoScrollInterval) clearInterval(autoScrollInterval);
+      autoScrollInterval = window.setInterval(() => {
+        if (!isPaused) {
+          prevSlide();
+        }
+      }, 5000);
+    }
+
+    function stopAutoScroll() {
+      if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+      }
+    }
+
+    track.addEventListener("transitionend", handleTransitionEnd);
+
+    leftArrow?.addEventListener("click", () => {
+      prevSlide();
+      startAutoScroll();
+    });
+
+    rightArrow?.addEventListener("click", () => {
+      nextSlide();
+      startAutoScroll();
+    });
+
+    container?.addEventListener("mouseenter", () => {
+      isPaused = true;
+    });
+
+    container?.addEventListener("mouseleave", () => {
+      isPaused = false;
+    });
+
+    updateSlider(false);
+    startAutoScroll();
+  }
+
+  document.addEventListener("astro:page-load", initTestimonialsSlider);
+</script>

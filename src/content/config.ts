@@ -1,5 +1,14 @@
 import { defineCollection, z } from 'astro:content';
 
+const testimonialSchema = z.object({
+  name: z.string(),
+  company: z.string().optional(),
+  title: z.string().optional(),
+  quote: z.string(),
+  portrait: z.string().optional(),
+  order: z.number().optional(),
+});
+
 const commonSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
@@ -16,12 +25,7 @@ const commonSchema = z.object({
   logo: z.string().optional(),
 }).partial();
 
-const news = defineCollection({
-  type: 'content',
-  schema: commonSchema,
-});
-
-const work = defineCollection({
+const portfolio = defineCollection({
   type: 'content',
   schema: commonSchema,
 });
@@ -36,9 +40,14 @@ const pages = defineCollection({
   schema: commonSchema,
 });
 
+const testimonials = defineCollection({
+  type: 'content',
+  schema: testimonialSchema,
+});
+
 export const collections = {
-  news,
-  work,
+  portfolio,
   sold,
   pages,
+  testimonials,
 };
