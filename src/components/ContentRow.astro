@@ -21,9 +21,11 @@ const {
   buttonLabel = "CONTACT ME TODAY!",
   buttonHref,
   skipLinkText = "No thanks: take me to the site.",
-  skipLinkHref = "/",
+  skipLinkHref,
   reversed = false,
 } = Astro.props;
+
+const showButtons = buttonHref || skipLinkHref;
 ---
 
 <div class={`content-row ${reversed ? "reversed" : ""} fade-in-on-scroll`}>
@@ -32,10 +34,12 @@ const {
     <div class="text-wrapper">
       <p class="text-content">{text}</p>
     </div>
-    <div class="button-wrapper">
-      <Button variant="orange" label={buttonLabel} href={buttonHref} />
-      <a href={skipLinkHref} class="skip-link">{skipLinkText}</a>
-    </div>
+    {showButtons && (
+      <div class="button-wrapper">
+        {buttonHref && <Button variant="orange" label={buttonLabel} href={buttonHref} />}
+        {skipLinkHref && <a href={skipLinkHref} class="skip-link">{skipLinkText}</a>}
+      </div>
+    )}
   </div>
   <div class="photo-section">
     <img src={imageSrc} alt={imageAlt} />
@@ -78,7 +82,7 @@ const {
     width: 70%;
     text-align: center;
     font-family: var(--font-serif);
-    font-size: 1.6rem;
+    font-size: 1.92rem;
     line-height: 1.8;
     color: var(--color-base);
   }
@@ -143,7 +147,7 @@ const {
 
     .text-content {
       width: 90%;
-      font-size: 1.4rem;
+      font-size: 1.68rem;
     }
 
     .button-wrapper {

@@ -14,6 +14,8 @@ export interface Props {
   buttonHref?: string;
   skipLinkText?: string;
   skipLinkHref?: string;
+  description?: string;
+  overrideTitle?: string;
 }
 
 const {
@@ -29,9 +31,11 @@ const {
   buttonHref,
   skipLinkText,
   skipLinkHref,
+  description,
+  overrideTitle,
 } = Astro.props;
 const thumbnail = post.data.thumbnail;
-const title = post.data.title;
+const title = overrideTitle || post.data.title;
 const logo = post.data.logo;
 const backgroundPosition = post.data.backgroundPosition || "center center";
 const isLarge = count % 3 === 0;
@@ -39,7 +43,9 @@ const isHero = count === 1;
 
 // Construct background image style
 const bgStyle =
-  thumbnail && !hideBackground ? `background-image: url(${thumbnail}); background-position: ${backgroundPosition};` : "";
+  thumbnail && !hideBackground
+    ? `background-image: url(${thumbnail}); background-position: ${backgroundPosition};`
+    : "";
 const hasImage = thumbnail && !hideBackground;
 const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "with-image" : "no-image"} ${isHero ? "is-hero" : ""} post`;
 ---
@@ -77,10 +83,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
           ) : !isHero ? (
             <div class="post-card-standard">
               <h2 class="post-card-standard-title">{title}</h2>
-              <p class="post-card-description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
+              <div class="post-card-description" set:html={description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."} />
             </div>
           ) : (
             <h2 class="post-card-title">{title}</h2>
@@ -118,10 +121,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
           ) : !isHero ? (
             <div class="post-card-standard">
               <h2 class="post-card-standard-title">{title}</h2>
-              <p class="post-card-description">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
+              <div class="post-card-description" set:html={description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."} />
             </div>
           ) : (
             <h2 class="post-card-title">{title}</h2>
@@ -153,6 +153,9 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
       flex: 1 1 100%;
       height: 70vw;
     }
+    .post-card.is-hero {
+      margin-top: 0;
+    }
   }
 
   .post-card-large {
@@ -160,12 +163,18 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
   }
 
   .post-card.is-hero {
-    height: 38.5vw;
+    height: 660px;
   }
 
   @media (max-width: 700px) {
     .post-card.is-hero {
-      height: 77vw;
+      height: 137.21vw;
+    }
+  }
+
+  @media (max-width: 700px) and (min-width: 550px) {
+    .post-card.is-hero {
+      height: 109.77vw;
     }
   }
 
@@ -209,8 +218,8 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
   .post-card.is-hero.with-image .post-card-content {
     background: linear-gradient(
       to bottom,
-      rgba(103, 47, 12, 0.6),
-      rgba(35, 22, 8, 1)
+      rgba(103, 47, 12, 0.3),
+      rgba(35, 22, 8, 0.9)
     );
   }
 
@@ -225,13 +234,6 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     object-fit: contain;
     opacity: 0;
     animation: fadeInContent 2.5s ease-out 0.5s forwards;
-  }
-
-  @media (max-width: 850px) {
-    .post-card-logo {
-      max-height: 810px;
-      max-width: 45%;
-    }
   }
 
   .post-card-inner {
@@ -276,14 +278,14 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     width: 80px;
     height: 1px;
     background-color: rgba(255, 240, 219, 1);
-    margin: 1rem auto 0;
+    margin: 1.193rem auto 0;
   }
 
   .post-card-subtitle {
     margin: 0;
-    margin-top: 1.5rem;
+    margin-top: 1.788rem;
     font-family: var(--font-sans-serif);
-    font-size: 3.24rem;
+    font-size: 3.28rem;
     font-weight: 400;
     text-transform: lowercase;
     font-variant: small-caps;
@@ -297,9 +299,9 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
 
   .post-card-subtitle2 {
     margin: 0;
-    margin-top: 1rem;
+    margin-top: 1.193rem;
     font-family: var(--font-serif);
-    font-size: 2.16rem;
+    font-size: 2.4rem;
     font-weight: 400;
     font-style: italic;
     letter-spacing: 1px;
@@ -321,24 +323,54 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     animation: fadeInContent 2.5s ease-out 1.1s forwards;
   }
 
-  @media (max-width: 700px) {
+  /* Fluid typography scaling between 850px and 700px */
+  @media (max-width: 850px) {
+    .post-card-logo {
+      max-height: clamp(540px, 6.91vw + 433px, 599px);
+      max-width: clamp(30%, 0.38vw + 27.3%, 33.26%);
+    }
+
+    .post-card-inner {
+      padding-top: clamp(2.5rem, 1.76vw + 1.3rem, 4rem);
+      padding-bottom: clamp(4rem, 2.35vw + 2.4rem, 6rem);
+    }
+
+    .post-card-display-title {
+      font-size: clamp(4.8rem, 7.2vw + 1.65rem, 8.625rem);
+    }
+
+    .post-card-display-title::after {
+      margin: clamp(1.193rem, -0.82vw + 2.1rem, 1.889rem) auto 0;
+    }
+
+    .post-card-subtitle {
+      margin-top: clamp(1.788rem, -1.23vw + 3.4rem, 2.832rem);
+    }
+
+    .post-card-subtitle2 {
+      margin-top: clamp(1.193rem, -0.82vw + 2.1rem, 1.889rem);
+    }
+
     .post-card-buttons {
-      flex-direction: column;
-      gap: 0.75rem;
+      margin-top: clamp(3rem, 2.35vw + 1.4rem, 5rem);
     }
   }
 
   @media (max-width: 700px) {
-    .post-card-display-title {
-      font-size: 6rem;
+    .post-card-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+      transform: translateY(10%);
     }
+  }
 
+  @media (max-width: 700px) {
     .post-card-subtitle {
-      font-size: 2.52rem;
+      padding: 0 2.25rem;
     }
 
     .post-card-subtitle2 {
-      font-size: 1.68rem;
+      padding: 0 4.5rem;
     }
   }
 
@@ -357,7 +389,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
   .post-card-title {
     margin: 0;
     display: inline-block;
-    font-size: 3rem;
+    font-size: 4.5rem;
     max-width: 70%;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.33, 0, 0.2, 1);
@@ -373,9 +405,10 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    padding: 16.67% 2rem 2rem 16.67%;
+    padding: 2rem 2rem 2rem 16.67%;
   }
 
   .post-card-standard-title {
@@ -403,11 +436,25 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
     width: 70%;
     text-align: left;
     font-family: var(--font-serif);
-    font-size: 1.6rem;
+    font-size: 1.92rem;
     line-height: 1.8;
     color: rgba(255, 240, 219, 1);
     text-shadow: 0px 0px 4px black;
     margin-top: 1rem;
+  }
+
+  .post-card-description p {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .post-card-description ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+  }
+
+  .post-card-description li {
+    margin-bottom: 0.4rem;
   }
 
   @media (max-width: 700px) {
@@ -417,7 +464,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
 
     .post-card-description {
       width: 90%;
-      font-size: 1.4rem;
+      font-size: 1.68rem;
     }
   }
 
@@ -458,7 +505,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
   }
 
   .post-card.no-image .post-card-title {
-    font-size: 5rem;
+    font-size: 4.5rem;
     line-height: 1.15em;
     text-align: left;
   }
@@ -469,7 +516,7 @@ const postClass = `post-card ${isLarge ? "post-card-large" : ""} ${hasImage ? "w
 
   @media (max-width: 1200px) {
     .post-card.no-image .post-card-title {
-      font-size: 3.4rem;
+      font-size: 4.5rem;
     }
   }
   @media (max-width: 700px) {

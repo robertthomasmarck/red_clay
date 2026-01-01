@@ -314,6 +314,11 @@ const testimonials = allTestimonials
     .testimonial-company {
       font-size: 1.05rem;
     }
+
+    /* Show only first 3 testimonials on mobile */
+    .testimonial-slide:nth-child(n+7):not(.testimonial-clone) {
+      display: none;
+    }
   }
 </style>
 

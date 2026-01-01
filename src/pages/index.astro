@@ -62,6 +62,17 @@ if (heroPost?.collection === "sold") heroSlug = `sold/${heroPost.slug}`;
         // src/pages/bio/index.md -> /bio.
         // content/work/work-1.md -> /work/work-1.
 
+        const portfolioDescription = `<p>With a website designed by Red Path, you'll</p>
+<ul>
+  <li>Connect with your ideal client the moment they land on your website. They will know who you are and what you offer.</li>
+  <li>Save time because the clients you can't help will know you can't help them.</li>
+  <li>Filter out the clients who aren't looking for what you offer.</li>
+  <li>Save time because you don't have to spend weeks learning a website publishing platform.</li>
+  <li>Avoid the frustration of building and managing a complex technical product.</li>
+  <li>Instead of worrying that your website is attracting clients, be able to focus on what you do best: help people.</li>
+  <li>Feel like your website represents <strong>you</strong>.</li>
+</ul>`;
+
         return (
           <>
             <PostCard
@@ -83,14 +94,18 @@ if (heroPost?.collection === "sold") heroSlug = `sold/${heroPost.slug}`;
                 postCounter === 1 ? "I'll pass: Enter the site" : undefined
               }
               skipLinkHref={postCounter === 1 ? "/blog" : undefined}
+              description={post.data.title === "Portfolio" ? portfolioDescription : undefined}
+              overrideTitle={post.data.title === "Portfolio" ? "Your website is your first connection" : undefined}
             />
             {postCounter === 1 && (
               <ContentRow
-                title="Title Goes Hereeee"
-                text={`1 In the beginning God created the heavens and the earth. 2 Now the earth was formless and empty, darkness was over the surface of the deep, and the Spirit of God was hovering over the waters.`}
+                title="Reaching potential clients is tough"
+                text={`Imagine:
+Sarah lands on your front page. Your help is exactly what she needs... but moments later she clicks away: it just doesn't feel right.
+
+Imagine:
+John and Emma are looking for a traditional couples therapist. When they land on your site they don't find anything that tells them that you use a lot of play in your work. They quit on the third session because you suggested they talk about their issues while they build something with Lego.`}
                 imageSrc="/img/blue-reflection-1.jpeg"
-                buttonHref="#contact-section"
-                skipLinkHref="/blog"
               />
             )}
             {postCounter === 2 && (

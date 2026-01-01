@@ -246,8 +246,16 @@ const slides = [
       height: 50vw;
     }
 
+    /* Single slide with margins */
     .slide {
-      flex: 0 0 80%;
+      flex: 0 0 100%;
+      padding: 0 3rem;
+    }
+
+    /* Remove gradient overlays */
+    .slider-viewport::before,
+    .slider-viewport::after {
+      display: none;
     }
 
     .slide-title {
@@ -257,6 +265,15 @@ const slides = [
     .slider-arrow {
       width: 36px;
       height: 36px;
+    }
+
+    /* Position arrows outside tile */
+    .slider-arrow-left {
+      left: 0.5rem;
+    }
+
+    .slider-arrow-right {
+      right: 0.5rem;
     }
   }
 </style>
@@ -268,6 +285,7 @@ const slides = [
     const leftArrow = document.querySelector(".slider-arrow-left");
     const rightArrow = document.querySelector(".slider-arrow-right");
     const container = document.querySelector(".slider-container");
+    const viewport = document.querySelector(".slider-viewport");
 
     if (!track || allSlides.length === 0) return;
 
@@ -277,8 +295,11 @@ const slides = [
 
     const cloneCount = 3; // Number of clones at each end
     const realSlideCount = 6; // Original number of slides
-    const totalSlides = allSlides.length; // Total including clones
-    const slideWidth = 100 / 3; // 33.333% per slide
+
+    // Dynamic slideWidth based on viewport
+    function getSlideWidth() {
+      return window.innerWidth <= 700 ? 100 : 100 / 3;
+    }
 
     // Start at first real slide (after the clones at the beginning)
     let currentIndex = cloneCount;
@@ -289,6 +310,7 @@ const slides = [
       } else {
         track.style.transition = "transform 0.5s ease-in-out";
       }
+      const slideWidth = getSlideWidth();
       const offset = -currentIndex * slideWidth;
       track.style.transform = `translateX(${offset}%)`;
     }
@@ -358,6 +380,38 @@ const slides = [
 
     container?.addEventListener("mouseleave", () => {
       isPaused = false;
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const swipeThreshold = 50;
+
+    viewport?.addEventListener("touchstart", (e: TouchEvent) => {
+      touchStartX = e.touches[0].clientX;
+      isPaused = true;
+    }, { passive: true });
+
+    viewport?.addEventListener("touchmove", (e: TouchEvent) => {
+      touchEndX = e.touches[0].clientX;
+    }, { passive: true });
+
+    viewport?.addEventListener("touchend", () => {
+      const swipeDistance = touchStartX - touchEndX;
+      if (Math.abs(swipeDistance) > swipeThreshold) {
+        if (swipeDistance > 0) {
+          nextSlide(); // Swipe left = next
+        } else {
+          prevSlide(); // Swipe right = prev
+        }
+      }
+      isPaused = false;
+      startAutoScroll();
+    });
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+      updateSlider(false);
     });
 
     // Initialize position and start auto-scroll

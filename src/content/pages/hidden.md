@@ -13,3 +13,4 @@ pagetype:
 - [Story Brand](/storybrand)
 - [Market Research](/marketresearch)
 - [Landing Page Plan](/landingpageplan)
+- [Images](/images)

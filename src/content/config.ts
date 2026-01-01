@@ -23,6 +23,7 @@ const commonSchema = z.object({
   number: z.number().optional(),
   pagetype: z.array(z.string()).optional(),
   logo: z.string().optional(),
+  backgroundPosition: z.string().optional(),
 }).partial();
 
 const portfolio = defineCollection({
